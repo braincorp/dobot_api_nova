@@ -3,6 +3,7 @@ import logging
 import os
 import socket
 import threading
+from copy import copy
 from time import sleep
 import re
 
@@ -1288,7 +1289,7 @@ class DobotApiFeedback(DobotApiBase):
         Return the current robot status.
         """
         with self.__global_lock_value:
-            return self.__feed_data
+            return copy(self.__feed_data)
 
     def wait_until_arrive(self, command_id: int) -> None:
         """
