@@ -4,6 +4,7 @@ import os
 import socket
 import threading
 from copy import copy
+from enum import IntEnum
 from time import sleep
 import re
 
@@ -110,6 +111,21 @@ def alarmAlarmJsonFile():
     with open(jsonServoPath, encoding='utf-8') as f:
         dataServo = json.load(f)
     return dataController, dataServo
+
+
+class RobotModes(IntEnum):
+    """Robot modes."""
+    INIT = 1
+    BRAKE_OPEN = 2
+    POWER_STATUS = 3
+    DISABLED = 4
+    ENABLE = 5
+    BACKDRIVE = 6
+    RUNNING = 7
+    RECORDING = 8
+    ERROR = 9
+    PAUSE = 10
+    JOG = 11
 
 
 class DobotApiBase:
@@ -1210,7 +1226,7 @@ class DobotApiFeedback(DobotApiBase):
         self.__feed_data.len = feed_info["len"][0]
         self.__feed_data.digital_input_bits = feed_info["digital_input_bits"][0]
         self.__feed_data.digital_output_bits = feed_info["digital_output_bits"][0]
-        self.__feed_data.robot_mode = feed_info["robot_mode"][0]
+        self.__feed_data.robot_mode = RobotModes(feed_info["robot_mode"][0])
         self.__feed_data.time_stamp = feed_info["time_stamp"][0]
         self.__feed_data.time_stamp_reserve_bit = feed_info["time_stamp_reserve_bit"][0]
         self.__feed_data.test_value = feed_info["test_value"][0]
