@@ -254,6 +254,23 @@ class DobotApiBase:
             self._logger.warning(f"Unexpected Error ID: {error_id}")
 
 
+class DobotApiRG6(DobotApiBase):
+    def __init__(self, ip: IPStr, port: PortInt, logger: logging.Logger):
+        super().__init__(ip=ip, port=port, logger=logger)
+
+
+    def write_gripper_position(self, position: float) -> None:
+        """Write the gripper position to the robot."""
+        # TODO
+        string = f"SetEndEffectorGripper({position}, 1, 1)"
+        self.send_receive_msg(string)
+
+    def read_gripper_position(self) -> float:
+        """Read the gripper position from the robot."""
+        # TODO:
+        string = "GetEndEffectorGripper(1)"
+        return float(self.send_receive_msg(string))
+
 class DobotApiDashboard(DobotApiBase):
     """
     Define class dobot_api_dashboard to establish a connection to Dobot
