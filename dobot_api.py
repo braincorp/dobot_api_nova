@@ -1227,8 +1227,8 @@ class DobotApiFeedback(DobotApiBase):
         self.__feed_data.digital_input_bits = feed_info["digital_input_bits"][0]
         self.__feed_data.digital_output_bits = feed_info["digital_output_bits"][0]
         self.__feed_data.robot_mode = RobotModes(feed_info["robot_mode"][0])
-        self.__feed_data.time_stamp = feed_info["time_stamp"][0]
-        self.__feed_data.time_stamp_reserve_bit = feed_info["time_stamp_reserve_bit"][0]
+        self.__feed_data.timestamp = feed_info["time_stamp"][0]
+        self.__feed_data.timestamp_reserve_bit = feed_info["time_stamp_reserve_bit"][0]
         self.__feed_data.test_value = feed_info["test_value"][0]
         self.__feed_data.test_value_keep_bit = feed_info["test_value_keep_bit"][0]
         self.__feed_data.speed_scaling = feed_info["speed_scaling"][0]
