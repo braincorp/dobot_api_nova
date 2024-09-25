@@ -202,7 +202,6 @@ class DobotApiBase:
         with self.__global_lock:
             self.send_data(string)
             recv_data = self.wait_reply()
-            self._logger.info(f'recv_data type: {type(recv_data)}')
             self.parse_result_id(recv_data)
             return recv_data
 
@@ -230,7 +229,6 @@ class DobotApiBase:
             self._logger.warning("Control mode is not TCP")
             return
 
-        print(f'value received: {value_recv}')
         recv_data = re.findall(r"-?\d+", value_recv)
         recv_data = [int(num) for num in recv_data]
 
