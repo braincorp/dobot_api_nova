@@ -97,6 +97,7 @@ IPStr = str
 PortInt = int
 
 TCP_PORTS = (29999, 30003, 30004, 30005)  # TCP communication interface ports
+SOCKET_CONNECT_SLEEP_TIME_S = 1e-3  # Time to sleep between socket connection attempts, in seconds
 
 # 读取控制器和伺服告警文件
 
@@ -153,7 +154,7 @@ class DobotApiBase:
         except socket.error:
             raise RuntimeError(f"Could not connect to socket: {socket.error}")
 
-    def send_data(self, string: str):
+    def _send_data(self, string: str):
         """Send data to the socket. Retries until successful."""
         self._logger.debug(f"Send to {self.ip}:{self.port}: {string}")
         try:
@@ -166,7 +167,7 @@ class DobotApiBase:
                     self.socket_dobot.send(str.encode(string, "utf-8"))
                     break
                 except Exception:
-                    sleep(1)
+                    sleep(SOCKET_CONNECT_SLEEP_TIME_S)
 
     def wait_reply(self):
         """
@@ -195,12 +196,19 @@ class DobotApiBase:
             except socket.error as e:
                 self._logger.warning(f"Error while closing socket: {e}")
 
+    def send_msg(self, string: str) -> None:
+        """
+        Send data to the robot. Does not wait for a reply.
+        """
+        with self.__global_lock:
+            self._send_data(string)
+
     def send_receive_msg(self, string: str) -> str:
         """
         Send data to the robot and wait for the reply. Returns the reply.
         """
         with self.__global_lock:
-            self.send_data(string)
+            self._send_data(string)
             recv_data = self.wait_reply()
             self.parse_result_id(recv_data)
             return recv_data
@@ -217,7 +225,7 @@ class DobotApiBase:
                 socket_dobot.connect((ip, port))
                 break
             except Exception:
-                sleep(1)
+                sleep(SOCKET_CONNECT_SLEEP_TIME_S)
         return socket_dobot
 
     def parse_result_id(self, value_recv: str) -> None:
